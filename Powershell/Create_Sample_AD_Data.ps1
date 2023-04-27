@@ -30,23 +30,23 @@ New-ADGroup @group2
 
 # Create users
 $user1 = @{
-    Name = "John Doe"
-    GivenName = "John"
-    Surname = "Doe"
-    DisplayName = "John Doe"
-    SamAccountName = "jdoe"
-    UserPrincipalName = "jdoe@$(Get-ADDomain).DNSRoot"
+    Name = "Tony Stark"
+    GivenName = "Tony"
+    Surname = "Stark"
+    DisplayName = "Tony Stark"
+    SamAccountName = "Tony.Stark"
+    UserPrincipalName = "Tony.Stark@$(Get-ADDomain).DNSRoot"
     AccountPassword = (ConvertTo-SecureString "P@ssw0rd" -AsPlainText -Force)
     Enabled = $true
     Path = "OU=$ou1,$domain"
 }
 $user2 = @{
-    Name = "Jane Smith"
-    GivenName = "Jane"
-    Surname = "Smith"
-    DisplayName = "Jane Smith"
-    SamAccountName = "jsmith"
-    UserPrincipalName = "jsmith@$(Get-ADDomain).DNSRoot"
+    Name = "Harley Quinn"
+    GivenName = "Harley"
+    Surname = "Quinn"
+    DisplayName = "Harley Quinn"
+    SamAccountName = "Harley.Quinn"
+    UserPrincipalName = "Harley.Quinn@$(Get-ADDomain).DNSRoot"
     AccountPassword = (ConvertTo-SecureString "P@ssw0rd" -AsPlainText -Force)
     Enabled = $true
     Path = "OU=$ou2,$domain"
@@ -56,5 +56,5 @@ New-ADUser @user1
 New-ADUser @user2
 
 # Add users to groups
-Add-ADGroupMember -Identity "IT Admins" -Members "jdoe"
-Add-ADGroupMember -Identity "HR Team" -Members "jsmith"
+Add-ADGroupMember -Identity "IT Admins" -Members "Tony.Stark"
+Add-ADGroupMember -Identity "HR Team" -Members "Harley.Quinn"
