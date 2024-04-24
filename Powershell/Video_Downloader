@@ -1,0 +1,52 @@
+# Set the download path
+$downloadPath = "C:\temp"
+
+# Ensure the download path exists
+if (-Not (Test-Path $downloadPath)) {
+    New-Item -ItemType Directory -Path $downloadPath
+}
+
+# Function to check and install Scoop
+function Ensure-ScoopInstalled {
+    if (-Not (Get-Command "scoop" -ErrorAction SilentlyContinue)) {
+        Write-Host "Installing Scoop..."
+        irm get.scoop.sh | iex
+    }
+}
+
+# Function to install a program using Scoop
+function Install-WithScoop($packageName) {
+    if (-Not (scoop list | Select-String -Pattern $packageName)) {
+        Write-Host "Installing $packageName..."
+        scoop install $packageName
+    }
+}
+
+# Ensure Scoop is installed
+Ensure-ScoopInstalled
+
+# Ensure ffmpeg and yt-dlp are installed
+Install-WithScoop "ffmpeg"
+Install-WithScoop "yt-dlp"
+
+# Prompt the user for the video URL
+$url = Read-Host "Please enter the video URL"
+
+# Check if yt-dlp is installed
+if (-Not (Get-Command "yt-dlp" -ErrorAction SilentlyContinue)) {
+    Write-Error "yt-dlp is not installed. Please run the script again after installation completes."
+    exit
+}
+
+# Enclose URL in quotes to prevent PowerShell from interpreting characters as commands
+$quotedUrl = '"' + $url + '"'
+
+# Command to download video in 4K if available, with verbose logging for debugging
+$command = "yt-dlp -f 'bestvideo[height<=2160]+bestaudio/best[height<=2160]' --merge-output-format mkv --no-playlist --verbose $quotedUrl -o '$downloadPath\%(title)s.%(ext)s'"
+
+try {
+    Invoke-Expression $command
+    Write-Output "Download completed. Check the folder: $downloadPath"
+} catch {
+    Write-Error "Failed to download the video. Check the verbose output for details."
+}
